@@ -10,6 +10,7 @@ int main()
     // rows
     for (int j = 0; j < image_height; j++)
     {
+        std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
         // columns
         for (int i = 0; i < image_width; i++)
         {
@@ -27,4 +28,6 @@ int main()
             std::cout << ir << ' ' << ig << ' ' << ib << '\n';
         }
     }
+
+    std::clog << "\rDone.                 \n";
 }
