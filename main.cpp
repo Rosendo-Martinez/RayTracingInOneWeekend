@@ -6,7 +6,12 @@
 
 color ray_color(const ray& r)
 {
-    return color(0,0,0);
+    // Color gradient from blue to white
+
+    vec3 unit_dir = unit_vector(r.direction());
+    auto a = 0.5*(unit_dir.y() + 1.0); // [0,1]
+    // lerp: (1 - a) * white + a * blue
+    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
 int main() 
