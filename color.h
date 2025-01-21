@@ -2,6 +2,7 @@
 #define COLOR_H
 
 #include "rtweekend.h"
+#include "interval.h"
 #include "vec3.h"
 
 using color = vec3;
@@ -13,10 +14,11 @@ void write_color(std::ostream& out, const color& pixel_color)
     double g = pixel_color.y();
     double b = pixel_color.z();
 
-    // Map: [0,1] --> [0,255]
-    int rByte = int(255.999 * r);
-    int gByte = int(255.999 * g);
-    int bByte = int(255.999 * b);
+    // Map: [0,1] -> [0,255]
+    static const interval intensity(0.000, 0.999);
+    int rByte = int(256 * intensity.clamp(r));
+    int gByte = int(256 * intensity.clamp(g));
+    int bByte = int(256 * intensity.clamp(b));
 
     // Write out the pixel color
     out << rByte << ' ' << gByte << ' ' << bByte << '\n';
