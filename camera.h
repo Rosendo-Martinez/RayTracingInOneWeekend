@@ -6,9 +6,10 @@
 class camera
 {
 public:
-    double aspect_ratio = 1.0; // Ratio of image width over height
-    int    image_width  = 100; // Rendered image width in pixel count
-    int    samples_per_pixel = 10;
+    double aspect_ratio      = 1.0; // Ratio of image width over height
+    int    image_width       = 100; // Rendered image width in pixel count
+    int    samples_per_pixel = 10;  // number of random samples per pixel
+    int    max_depth         = 10;  // maximum number of bounces a ray can do
 
     /**
      * Renders the image.
@@ -27,7 +28,7 @@ public:
                 for (int sample = 0; sample < samples_per_pixel; sample++)
                 {
                     ray r = get_ray(i,j);
-                    sumOfSamples += ray_color(r, world);
+                    sumOfSamples += ray_color(r, max_depth, world);
                 }
 
                 write_color(std::cout, pixel_samples_scale * sumOfSamples);
@@ -103,15 +104,20 @@ private:
     /**
      * Color of pixel that ray goes through.
      */
-    color ray_color(const ray& r, const hittable& world) const
+    color ray_color(const ray& r, int depth, const hittable& world) const
     {
         // World
+
+        if (depth <= 0) // ray exceeded number of allowed bounces
+        {
+            return color(0.0,0.0,0.0);
+        }
         
         hit_record rec;
         if (world.hit(r, interval(0, infinity), rec)) // hit diffuse object (ray bounces off it)
         {
             vec3 direction = random_on_hemisphere(rec.normal); // bounce in some random dir
-            return 0.5 * ray_color(ray(rec.p, direction), world);
+            return 0.5 * ray_color(ray(rec.p, direction), depth - 1,world);
         }
 
         // Gradient background
