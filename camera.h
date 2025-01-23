@@ -114,7 +114,7 @@ private:
         }
         
         hit_record rec;
-        if (world.hit(r, interval(0, infinity), rec)) // hit diffuse object (ray bounces off it)
+        if (world.hit(r, interval(0.001, infinity), rec)) // hit diffuse object (ray bounces off it) (0.001 for floating point errors / shadow acne)
         {
             vec3 direction = random_on_hemisphere(rec.normal); // bounce in some random dir
             return 0.5 * ray_color(ray(rec.p, direction), depth - 1,world);
