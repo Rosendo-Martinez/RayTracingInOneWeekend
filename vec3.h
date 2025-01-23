@@ -49,6 +49,14 @@ public:
     {
         return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
     }
+
+    static vec3 random() {
+        return vec3(random_double(), random_double(), random_double());
+    }
+
+    static vec3 random(double min, double max) {
+        return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
+    }
 };
 
 // Useful alias
@@ -99,6 +107,31 @@ inline vec3 cross(const vec3& u, const vec3& v) {
 
 inline vec3 unit_vector(const vec3& v) {
     return v / v.length();
+}
+
+// Random vector on unit sphere.
+inline vec3 random_unit_vector() {
+    while (true) {
+        auto p = vec3::random(-1,1); // random vector in 2x2x2 cube centered at origin
+        auto lensq = p.length_squared();
+        // if lensq > 1, then random vector falls outside unit sphere, but inside cube 
+        // don't want this affecting the randoms / probablity so throw it away and try again
+        if (lensq <= 1) 
+        {
+            return p / sqrt(lensq);
+        }
+    }
+}
+
+inline vec3 random_on_hemisphere(const vec3& normal) {
+    vec3 on_unit_sphere = random_unit_vector();
+    if (dot(on_unit_sphere, normal) > 0.0) // rnd vec in correct part of sphere
+    {
+        return on_unit_sphere;
+    }
+    else {
+        return -on_unit_sphere; // on oppsite hemisphere, so reverse its dir
+    }
 }
 
 #endif

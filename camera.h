@@ -108,9 +108,10 @@ private:
         // World
         
         hit_record rec;
-        if (world.hit(r, interval(0, infinity), rec)) 
+        if (world.hit(r, interval(0, infinity), rec)) // hit diffuse object (ray bounces off it)
         {
-            return 0.5 * (rec.normal + color(1,1,1));
+            vec3 direction = random_on_hemisphere(rec.normal); // bounce in some random dir
+            return 0.5 * ray_color(ray(rec.p, direction), world);
         }
 
         // Gradient background
